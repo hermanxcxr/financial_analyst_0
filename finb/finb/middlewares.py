@@ -11,9 +11,10 @@ from itemadapter import is_item, ItemAdapter
 
 
 LIST_OF_PROXIES = [
-    'https://51.81.82.175:80',
-    'https://208.80.28.208:8080',
-    'https://208.80.28.208:53281'
+    'https://212.83.128.152:3838',
+    'https://14.143.168.230:8080',
+    'https://168.181.62.74:317332'
+
 ]
 
 
