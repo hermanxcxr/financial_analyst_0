@@ -4,22 +4,12 @@
 # https://docs.scrapy.org/en/latest/topics/spider-middleware.html
 
 from scrapy import signals
-import random
 
 # useful for handling different item types with a single interface
 from itemadapter import is_item, ItemAdapter
 
-LIST_OF_PROXIES = []
-with open('../../temp_output/depurados.txt','rt',encoding='utf-8') as f:
-    for line in f:
-        line = line.replace("\n","")
-        LIST_OF_PROXIES.append(line)
-#print(lista_de_proxies)
 
-
-
-
-class FinbSpiderMiddleware:
+class ProxyFinderSpiderMiddleware:
     # Not all methods need to be defined. If a method is not defined,
     # scrapy acts as if the spider middleware does not modify the
     # passed objects.
@@ -66,7 +56,7 @@ class FinbSpiderMiddleware:
         spider.logger.info('Spider opened: %s' % spider.name)
 
 
-class FinbDownloaderMiddleware(object):
+class ProxyFinderDownloaderMiddleware:
     # Not all methods need to be defined. If a method is not defined,
     # scrapy acts as if the downloader middleware does not modify the
     # passed objects.
@@ -88,12 +78,6 @@ class FinbDownloaderMiddleware(object):
         # - or return a Request object
         # - or raise IgnoreRequest: process_exception() methods of
         #   installed downloader middleware will be called
-
-        proxy = random.choice(LIST_OF_PROXIES)
-        print("********")
-        print(proxy)
-        print("********")
-        request.meta["proxy"] = proxy
         return None
 
     def process_response(self, request, response, spider):

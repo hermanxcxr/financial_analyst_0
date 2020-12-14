@@ -1,3 +1,13 @@
 /venv
 /documentacion
+/old
+/temp_output
+/output
 test_os.py
+resultados.csv
+resultados.html
+.gitignore
+depurados.txt
+exchange.csv
+proxies_list.txt
+stocks_prev.csv
