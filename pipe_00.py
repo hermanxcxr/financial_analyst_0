@@ -1,3 +1,4 @@
+'''python pipe_00.py 0 '''
 import subprocess
 import sys
 
@@ -10,7 +11,7 @@ def run(*args):
         subprocess.run(['scrapy','crawl','proxyfinder'],cwd='./proxy_finder/proxy_finder')
         #subprocess.run(['mv','proxies_list.txt','temp_output/']) YA NO ES NECESARIO SE UBICA EL ARCHIVO DIRECTAMENTE
         subprocess.run(['python','depurador_proxies.py'],cwd='./operaciones')
-        subprocess.run(['scrapy','crawl','finb'],cwd='./finb/finb')
+        subprocess.run(['scrapy','crawl','finb','-a','target=0'],cwd='./finb/finb')
         #probable ciclo for en base al resultado esperado de la cantidad de EXCHANGES descargados repitiendo el proceso anterior
     elif activador_proxy == 1:
         print('ensayo')

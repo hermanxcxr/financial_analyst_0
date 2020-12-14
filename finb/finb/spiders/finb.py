@@ -16,45 +16,72 @@ class FinbSpider(scrapy.Spider):
     }
     
     def parse(self, response):
-        ''' Parse toma los nombres,tickers y urls de los Exchange mkts 
-        y crea el archivo csv que contiene los EXCHANGE MARKETS 
-        XPATHS : DEPURADOS
-        #URL eoddata main = https://eoddata.com
-        #xpath exchange_simbolos = '//div[contains(@id,"Exchange")]/table[@class="quotes"]/tr/td/a/text()'
-        #xpath exchange_names = '//div[contains(@id,"Exchange")]/table[@class="quotes"]/tr/td[2]'
-        #xpath exchange_url = '//div[contains(@id,"Exchange")]/table[@class="quotes"]/tr/td/a[contains(@title,"Browse")]/@href'
-        '''
-        
-        #borra el contenido del archivo final 
-        with open('../../output/stocks_prev.csv', 'wt', encoding= 'utf-8') as f:
-            f.write("Ticker_Stock,Name_Stock,Ticker_Exch")
 
-        exchange_url = response.xpath('//div[contains(@id,"Exchange")]/table[@class="quotes"]/tr/td/a[contains(@title,"Browse")]/@href').getall()
-        exchange_ticker = response.xpath('//div[contains(@id,"Exchange")]/table[@class="quotes"]/tr/td/a/text()').getall()
-        exchange_name = response.xpath('//div[contains(@id,"Exchange")]/table[@class="quotes"]/tr/td[2]').getall()
-        #print('finb******')
-        #print(variable)
-        #print('finb******')
-        with open('../../output/exchange.csv', 'w', encoding= 'utf-8') as f:
-            f.write("Ticker_Exchange,Name_Exchange,URL_Exchange")
-            f.write("\n")
-            for ticker, name, url in zip(exchange_ticker,exchange_name,exchange_url):
-                f.write(ticker)
-                f.write(",")
-                name = name.replace("<td>","")
-                name = name.replace("</td>","")
-                f.write(name)
-                f.write(",")
-                f.write(response.urljoin(url))
+        target = int(self.target)
+
+        if target == 0 : 
+
+            ''' Parse toma los nombres,tickers y urls de los Exchange mkts 
+            y crea el archivo csv que contiene los EXCHANGE MARKETS 
+            XPATHS : DEPURADOS
+            #URL eoddata main = https://eoddata.com
+            #xpath exchange_simbolos = '//div[contains(@id,"Exchange")]/table[@class="quotes"]/tr/td/a/text()'
+            #xpath exchange_names = '//div[contains(@id,"Exchange")]/table[@class="quotes"]/tr/td[2]'
+            #xpath exchange_url = '//div[contains(@id,"Exchange")]/table[@class="quotes"]/tr/td/a[contains(@title,"Browse")]/@href'
+            '''
+            exchange_url = response.xpath('//div[contains(@id,"Exchange")]/table[@class="quotes"]/tr/td/a[contains(@title,"Browse")]/@href').getall()
+            exchange_ticker = response.xpath('//div[contains(@id,"Exchange")]/table[@class="quotes"]/tr/td/a/text()').getall()
+            exchange_name = response.xpath('//div[contains(@id,"Exchange")]/table[@class="quotes"]/tr/td[2]').getall()
+
+            #borra el contenido del archivo final 
+            with open('../../output/stocks_prev.csv', 'wt', encoding= 'utf-8') as f:
+                f.write("Ticker_Stock,Name_Stock,Ticker_Exch")
+
+            #print('finb******')
+            #print(variable)
+            #print('finb******')
+            with open('../../output/exchange.csv', 'w', encoding= 'utf-8') as f:
+                f.write("Ticker_Exchange,Name_Exchange,URL_Exchange")
                 f.write("\n")
+                idx=0
+                for ticker, name, url in zip(exchange_ticker,exchange_name,exchange_url):
+                    f.write(ticker)
+                    f.write(",")
+                    name = name.replace("<td>","")
+                    name = name.replace("</td>","")
+                    f.write(name)
+                    f.write(",")
+                    f.write(response.urljoin(url))
+                    f.write("\n")
+                    idx += 1
+                with open('../../temp_output/exchanges_length.csv',"w") as fp:
+                    fp.write(str(idx))
+                fp.close()
 
-        for url,exc_ticker in zip(exchange_url,exchange_ticker):
-            url_complete = response.urljoin(url)
-            yield response.follow(
-                url_complete,
-                callback = self.parse_link,
-                cb_kwargs = { "url" : url_complete, "exc_ticker" : exc_ticker}
-            )
+            #print(f.readlines())
+                # with open('../../temp_output/csv_lines.csv', 'w', encoding= 'utf-8') as g:
+                #     exchange_lines = f.readlines()
+                #     exchange_lines = str(len(exchange_lines)) # este numero debe ir a pipe_00 de algun modo
+                #     g.write(exchange_lines)
+                #     #print(exchange_lines)
+
+        if target == 1:
+
+            with open('output/exchange.csv', 'r', encoding= 'utf-8') as f:
+                exchange_lines = f.readlines()
+                n = len(exchange_lines) # este numero debe ir a pipe_00 de algun modo
+                print(exchange_lines[2])
+            
+            exchange_url = response.xpath('//div[contains(@id,"Exchange")]/table[@class="quotes"]/tr/td/a[contains(@title,"Browse")]/@href').getall()
+            exchange_ticker = response.xpath('//div[contains(@id,"Exchange")]/table[@class="quotes"]/tr/td/a/text()').getall()
+
+            for url,exc_ticker in zip(exchange_url,exchange_ticker):
+                url_complete = response.urljoin(url)
+                yield response.follow(
+                    url_complete,
+                    callback = self.parse_link,
+                    cb_kwargs = { "url" : url_complete, "exc_ticker" : exc_ticker}
+                )
 
     def parse_link(self,response, **kwargs):
         '''parse_link se ubica en la primera página de cada Exchange mkt

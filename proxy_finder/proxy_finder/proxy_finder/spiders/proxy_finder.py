@@ -37,9 +37,16 @@ class ProxyFinder(scrapy.Spider):
         proxies = {}
         proxies["servers"] = []        
         with open('../../temp_output/proxies_list.txt','wt',encoding='utf-8') as f:
+            
             for ip,port,https_flag,idx in zip(ips,ports,https_flags,range(1,len(ips)+1)):
                 ip_port = ip + ":" + port
                 
                 proxies["servers"].append({"ip_port" : ip_port , "https_flag": https_flag})
-    
+                idx = idx
+            
+            # Se extrae de f la cantidad de servers que contiene
+            # with open('a.csv',"w") as fp:
+            #     fp.write(str(idx))
+            # fp.close()
+            
             json.dump(proxies,f)
