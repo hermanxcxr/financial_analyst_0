@@ -67,7 +67,7 @@ class FinbSpider(scrapy.Spider):
                 #     g.write(exchange_lines)
                 #     #print(exchange_lines)
 
-        if target == 1:
+        if target > 0:
             
             with open('../../output/exchange.csv', 'r', encoding= 'utf-8') as f:
                 exchanges = f.readlines()

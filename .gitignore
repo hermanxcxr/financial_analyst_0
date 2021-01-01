@@ -11,3 +11,6 @@ depurados.txt
 exchange.csv
 proxies_list.txt
 stocks_prev.csv
+analyst_00.py
+conv_sql_prime.py
+OHLCV_getter.py
